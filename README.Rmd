@@ -1,0 +1,53 @@
+---
+title: "README.md"
+author: "Marina FERENT"
+date: "2024-10-25"
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# tSeriesTools
+R package for testing for unit root and stationarizing series.
+
+The package contains functions that:
+    (1) test for unit root and display type of non-stationarity based on Ayat and Burridge (2000) sequencial procedure
+    (2) based on the exact type of non-stationarity identified, stationarize the series
+
+## Installation
+```{r}
+library(devtools)
+install_github("marinaferent/tSeriesTools")
+```
+
+## Usage
+```{r}
+library(tSeriesTools)
+```
+
+**unitRootDF_ABsequential()** - Tests a series for unit root using the Dickey-Fuller test and following the Ayat and Burridge (2000) sequential procedure. It returns a text: A text: "Stationary, no trend", "Stationary around a linear trend", "Random walk with drift", "Unit root and linear trend". 
+
+*Example*
+```{r}
+library(quantmod)
+library(urca)
+getSymbols("AAPL", src="yahoo")
+unitRootDF_ABsequential(AAPL$AAPL.Close)
+unitRootDF_ABsequential(AAPL$AAPL.Close, 0.01)
+```
+
+**stationarize()** - Takes a time series of type "Stationary around a linear trend", "Random walk with drift", or "Unit root and linear trend" and returns a time series that is "Stationary, no trend".
+
+*Example*
+```{r}
+library(quantmod)
+library(urca)
+getSymbols("AAPL", src="yahoo")
+type=unitRootDF_ABsequential(AAPL$AAPL.Close)
+aapl_stationary=stationarize(ts(AAPL$AAPL.Close), type=type)
+```
+
