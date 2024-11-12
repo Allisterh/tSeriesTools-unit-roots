@@ -92,5 +92,5 @@ getSymbols("AAPL", src="yahoo")
 
 ``` r
 type=unitRootDF_ABsequential(AAPL$AAPL.Close)
-aapl_stationary=stationarize(ts(AAPL$AAPL.Close), type=type)
+aapl_stationary=stationarize(AAPL$AAPL.Close, type=type)
 ```
