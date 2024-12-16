@@ -51,3 +51,35 @@ type=unitRootDF_ABsequential(AAPL$AAPL.Close)
 aapl_stationary=stationarize(ts(AAPL$AAPL.Close), type=type)
 ```
 
+**forecastOriginal()** - Takes an ARIMA estimation on stationary and seasonally adjusted series and returns the forecast on the original, non-stationary, not seasonally adjusted series. Currently available only for quarterly data.
+
+*Example*
+```{r}
+library(urca)
+library (forecast)
+library(wooldridge)
+data('intqrt')
+plot(intqrt$r3, type="l")
+Tbill3M=ts(as.numeric(intqrt$r3), start=c(1960,1), frequency=4)
+Tbill3M_dec=decompose(Tbill3M, type ="multiplicative")
+seasonalCoeff=Tbill3M_dec$figure
+Tbill3M_sa=ts(Tbill3M/Tbill3M_dec$seasonal, start=c(1960,1), frequency=4)
+type=unitRootDF_ABsequential(Tbill3M_sa)
+Tbill3M_stationary=stationarize(ts(Tbill3M_sa, start=c(1960,1), frequency=4), type=type)
+arimaEstimation=arima(Tbill3M_stationary, order = c(1,0,0))
+forecastOriginal(arimaEstimation, type, seasonalCoeff, seasonalityType="multiplicative", nQuarters=8, year=1991, quarter=1, saSeries=Tbill3M_sa)
+```
+
+**arimaModelFit()** - Returns the Log likelihood, Akaike information criterion, Bayesian information criterion, Invertible AR roots, and Invertible MA roots of an ARIMA model in an easy to export dataframe.
+
+*Example*
+```{r}
+library(quantmod)
+library(urca)
+getSymbols("AAPL", src="yahoo")
+type=unitRootDF_ABsequential(AAPL$AAPL.Close)
+aapl_stationary=stationarize(ts(AAPL$AAPL.Close), type=type)
+arimaEstimation=arima(aapl_stationary, order = c(1,0,0))
+arimaModelFit(arimaEstimation, decim=2)
+```
+
