@@ -23,11 +23,19 @@
 #' type=unitRootDF_ABsequential(Tbill3M_sa)
 #' Tbill3M_stationary=stationarize(ts(Tbill3M_sa, start=c(1960,1), frequency=4), type=type)
 #' arimaEstimation=arima(Tbill3M_stationary, order = c(1,0,0))
-#' forecastOriginal(arimaEstimation, type, seasonalCoeff, seasonalityType="multiplicative", nQuarters=8, year=1991, quarter=1, saSeries=Tbill3M_sa)
+#' forecastOriginal_quarterly(arimaEstimation, type, seasonalCoeff, seasonalityType="multiplicative", nQuarters=8, year=1991, quarter=1, saSeries=Tbill3M_sa)
 
-forecastOriginal=function(arimaEstimation, type, seasonalCoeff, seasonalityType, nQuarters=4, year, quarter, saSeries)
+forecastOriginal_quarterly=function(arimaEstimation, type, seasonalCoeff, seasonalityType="none", nQuarters=4, year, quarter, saSeries)
 {
-	#Step 1: Forecast the stationary series
+  modelOrder=eval(arimaEstimation$call$order)
+  if(modelOrder[2]==0)
+  {
+    model=paste0("ARMA (", modelOrder[1], ",", modelOrder[3], ")")
+  } else {
+    model=paste0("ARIMA (", modelOrder[1], "," , modelOrder[2], ",", modelOrder[3], ")")
+  }
+
+  #Step 1: Forecast the stationary series
 	forecast=forecast(arimaEstimation, h=nQuarters) #the forecasted values with confidence intervals
 	forecast_x_sa_stationary=as.data.frame(forecast)
 	forecast_x_sa_stationary_ts=ts(forecast_x_sa_stationary[,1], start=c(year,quarter), frequency=4)
@@ -120,6 +128,6 @@ forecastOriginal=function(arimaEstimation, type, seasonalCoeff, seasonalityType,
 		}
 	}
 	rownames(forecast_x)=rownames(forecast_x_sa_stationary)
+	colnames(forecast_x)=model
 	forecast_x
 }
-
