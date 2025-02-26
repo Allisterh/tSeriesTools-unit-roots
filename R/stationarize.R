@@ -99,7 +99,7 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
       }
     }
   }
-  x_stationary
-  intercept
-  betaTrend
+ results_list=list(x_stationary, intercept, betaTrend)
+ names(results_list)=c("x_stationary", "intercept", "betaTrend")
+ return(results_list)
 }
