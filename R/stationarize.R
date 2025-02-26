@@ -42,11 +42,15 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
 			If it is, then <<x_stationary>> is second difference, otherwise 3rd etc" )
     } else {
       x_stationary=diff(x)
+      intercept=c("NA")
+      betaTrend=c("NA")
     }
   } else {
     if(type=="Stationary, no trend")
     {
       x_stationary=x
+      intercept=c("NA")
+      betaTrend=c("NA")
     } else {
       if(type=="Stationary around a linear trend")
       {
@@ -96,4 +100,6 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
     }
   }
   x_stationary
+  intercept
+  betaTrend
 }
