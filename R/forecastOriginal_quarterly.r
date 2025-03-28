@@ -36,10 +36,10 @@ forecastOriginal_quarterly=function(arimaEstimation, type, seasonalCoeff, season
   }
 
   #Step 1: Forecast the stationary series
-	forecast=forecast(arimaEstimation, h=nQuarters) #the forecasted values with confidence intervals
+	forecast=forecast(arimaEstimation, h=nQuarters) #the forecasted values with prediction intervals
 	forecast_x_sa_stationary=as.data.frame(forecast)
 	forecast_x_sa_stationary_ts=ts(forecast_x_sa_stationary[,1], start=c(year,quarter), frequency=4)
-
+	
 	#Step 2: Forecast the original series
 	if(type=="Stationary, no trend")
 	{
