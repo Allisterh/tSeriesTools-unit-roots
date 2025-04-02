@@ -138,8 +138,7 @@ forecastOriginal_quarterly=function(arimaEstimation, type, seasonalCoeff, season
       }
     }
   }
-  forecast_x_dataframe=data.frame(forecast_x[[1]]$x, forecast_x[[2]]$x, forecast_x[[3]]$x,
-                                  forecast_x[[4]]$x, forecast_x[[5]]$x)
+  forecast_x_dataframe=data.frame(sapply(forecast_x, function(df) df$x))
 
   rownames(forecast_x_dataframe)=rownames(forecast_x_sa_stationary)
   colnames(forecast_x_dataframe)[1]=model
