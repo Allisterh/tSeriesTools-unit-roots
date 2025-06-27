@@ -2,7 +2,7 @@
 #'
 #' @param x An object of class ts.
 #' @param type Specifieces the type of the time series.
-#'   The options are: "Stationary around a linear trend", "Random walk with drift", "Unit root and linear trend"
+#'   The options are: "Stationary around a linear trend", "Random walk with drift", "Unit root and linear trend", "Stationary, no trend"
 #' @param pvalue Specifies the threshold for rejecting the null hypothesis after first differencing. The default is 0.05.
 #' @param ic Lag selection based on "AIC" or "BIC". The default is "BIC". Used for DF testing after first differencing.
 #' @returns A stationary, no trend series.
