@@ -1,7 +1,7 @@
 #' Takes a time series of type "Stationary around a linear trend", "Random walk with drift", or "Unit root and linear trend" and returns a time series that is "Stationary, no trend"
 #'
 #' @param x An object of class ts.
-#' @param type Specifieces the type of the time series.
+#' @param type Specifies the type of the time series.
 #'   The options are: "Stationary around a linear trend", "Random walk with drift", "Unit root and linear trend", "Stationary, no trend"
 #' @param pvalue Specifies the threshold for rejecting the null hypothesis after first differencing. The default is 0.05.
 #' @param ic Lag selection based on "AIC" or "BIC". The default is "BIC". Used for DF testing after first differencing.
@@ -38,8 +38,32 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
     }
     if(ADF3_stat>criticalValue)
     {
-      print("First difference is not stationary. To continue, write code to test if second difference is stationary.
-			If it is, then <<x_stationary>> is second difference, otherwise 3rd etc" )
+	ADF4=ur.df(diff(diff(x)), type = "drift", selectlags = "BIC")
+    	ADF4_stat=attributes(ADF4)$teststat[1] #the statistic of the test
+    	criticalValue_1=attributes(ADF4)$cval[1,1] #critical value at 1%
+    	criticalValue_5=attributes(ADF4)$cval[1,2] #critical value at 5%
+    	criticalValue_10=attributes(ADF4)$cval[1,3] #critical value at 10%
+
+    	if(pvalue==0.01)
+    	{
+      		criticalValue=criticalValue_1
+    	} else {
+      		if(pvalue==0.05)
+      		{
+        		criticalValue=criticalValue_5
+      		} else {
+        		criticalValue=criticalValue_10
+      		}
+    	}
+    	if(ADF4_stat>criticalValue)
+    	{
+	    print("Second difference is not stationary. To continue, write code to test if the third difference is stationary.
+			If it is, then <<x_stationary>> is third difference, otherwise 4th etc" )
+	} else {
+      		x_stationary=diff(diff(x))
+      		intercept=c("NA")
+      		betaTrend=c("NA")
+	}
     } else {
       x_stationary=diff(x)
       intercept=c("NA")
