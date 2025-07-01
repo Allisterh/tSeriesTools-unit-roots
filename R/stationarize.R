@@ -57,7 +57,7 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
     	}
     	if(ADF4_stat>criticalValue)
     	{
-	    print("Second difference is not stationary. To continue, write code to test if the third difference is stationary.
+	    print("First and second differences are not stationary. To continue, write code to test if the third difference is stationary.
 			If it is, then <<x_stationary>> is third difference, otherwise 4th etc" )
 	} else {
       		x_stationary=diff(diff(x))
@@ -113,7 +113,36 @@ stationarize=function(x, type, pvalue=0.05, ic="BIC")
           }
           if(ADF3_stat>criticalValue)
           {
-            print("First difference is not stationary. To continue, write code to test if second difference is stationary. ")
+		trend=1:length(diff(diff(x)))
+          	regression=lm(diff(diff(x))~trend, data.frame(trend, diff(diff(x))))
+          	x_stat_2=regression$residuals
+          	#x_stat_2=ts(x_stat_2, start=c(yearStartSeries, (quarterStartSeries+1)), frequency=4)
+          	intercept=summary(regression)$coeff[1,1]
+          	betaTrend=summary(regression)$coeff[2,1]
+
+          	ADF4=ur.df(x_stat_2, type = "drift", selectlags = "BIC")
+          	ADF4_stat=attributes(ADF4)$teststat[1] #the statistic of the test
+          	criticalValue_1=attributes(ADF4)$cval[1,1] #critical value at 1%
+          	criticalValue_5=attributes(ADF4)$cval[1,2] #critical value at 5%
+          	criticalValue_10=attributes(ADF4)$cval[1,3] #critical value at 10%
+
+          	if(pvalue==0.01)
+          	{
+            		criticalValue=criticalValue_1
+          	} else {
+            		if(pvalue==0.05)
+            		{
+              			criticalValue=criticalValue_5
+            		} else {
+              			criticalValue=criticalValue_10
+            		}
+          	}
+          	if(ADF4_stat>criticalValue)
+          	{	  
+            		print("First and second differences are not stationary. To continue, write code to test if third difference is stationary. ")
+		} else {
+			x_stationary=x_stat_2
+		}
           } else {
             x_stationary=x_stat
           }
